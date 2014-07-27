@@ -1,0 +1,39 @@
+#!/usr/bin/env perl
+# Run a single instance of a process
+@ARGV or die "Usage: single <command>\n";
+
+use strict;
+use warnings;
+use Digest::MD5 'md5_hex';
+use File::Spec;
+
+$ENV{PATH} ||= '/usr/local/bin:/usr/bin:/bin';
+$ENV{ALREADY_RUNNING_STATUS} ||= 0;
+
+my $exit_status = $ENV{ALREADY_RUNNING_STATUS};
+my $id = md5_hex "@ARGV";
+my $info_file = File::Spec->catfile(File::Spec->tmpdir, "single-$id");
+
+if (open my $INFO, '<', $info_file) {
+  my ($info, $pid) = ('', 0);
+  while (<$INFO>) {
+    $pid = $1 if /pid:\s*(\d+)/;
+    $info .= $_;
+  }
+  if ($pid and kill 0, $pid) {
+    print $info unless $ENV{SINGLE_SILENT};
+    print "status: running\n" unless $ENV{SINGLE_SILENT};
+    exit $exit_status;
+  }
+}
+
+open my $INFO, '>', $info_file or die "Write $info_file: $!";
+print $INFO "pid: $$\n";
+print $INFO "command: @ARGV\n";
+print $INFO "id: $id\n";
+print $INFO "started: @{[~~localtime]}\n";
+close $INFO;
+
+$exit_status = system(@ARGV) >> 8;
+unlink $info_file;
+exit $exit_status;
