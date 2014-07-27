@@ -32,6 +32,15 @@ NOTE: This script is not atomic, but more than good enough for handling the
 NOTE: Including shell characters (such as ">", "|", ";", ...) will invoke the
 shell, allowing unsafe user input.
 
+=head1 INSTALLATION
+
+The easiest way to get this application is by using cpanminus:
+
+  $ curl -L http://cpanmin.us | perl -n - --sudo App::single
+
+Note: C<--sudo> is to install "single" system wide, "-n" is to skip tests for
+faster installation.
+
 =cut
 
 use strict;
