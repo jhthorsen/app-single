@@ -7,14 +7,16 @@ plan skip_all => 'Cannot run without linux?' if $^O ne 'linux';
 plan skip_all => 'Cannot run without script/single' unless -x 'script/single';
 
 my $command = 'sleep 1';
+my $guard = 0;
 my $id = md5_hex $command;
 my %info;
 
 if (fork) {
-  usleep 200e3;
+  diag "Waiting for /tmp/single-$id";
+  usleep 1e3 until -r "/tmp/single-$id" or $guard++ > 1000;
+  ok $guard < 1000, "info file created ($guard)";
   $ENV{ALREADY_RUNNING_STATUS} = 42;
   $ENV{SINGLE_SILENT} = !$ENV{HARNESS_IS_VERBOSE};
-  ok -r "/tmp/single-$id", 'info file created';
   system 'script/single', $command;
   is $? >> 8, 42, 'already running';
   local @ARGV = ("/tmp/single-$id");
