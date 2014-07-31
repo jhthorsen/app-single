@@ -6,7 +6,7 @@ App::single - An application to run a single instance of a command
 
 =head1 VERSION
 
-0.01
+0.02
 
 =head1 DESCRIPTION
 
@@ -45,7 +45,7 @@ faster installation.
 
 use strict;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 COPYRIGHT AND LICENSE
 

@@ -11,7 +11,7 @@ WriteMakefile(
     resources => {
       bugtracker => 'https://github.com/jhthorsen/app-single/issues',
       homepage => 'https://github.com/jhthorsen/app-single',
-      repository => 'https://github.com/jhthorsen/app-single',
+      repository => 'https://github.com/jhthorsen/app-single.git',
     },
   },
   BUILD_REQUIRES => {
