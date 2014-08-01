@@ -1,7 +1,10 @@
 Changelog for App::single
 
+0.03
+       * Trying again to make single.t more robust
+
 0.02     Thu Jul 31 12:26:57 2014
-       * Try to make single file test more robust
+       * Try to make single.t more robust
 
 0.01     Sun Jul 27 11:06:48 2014
        * Add script/single

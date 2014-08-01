@@ -21,8 +21,7 @@ if (open my $INFO, '<', $info_file) {
     $info .= $_;
   }
   if ($pid and kill 0, $pid) {
-    print $info unless $ENV{SINGLE_SILENT};
-    print "status: running\n" unless $ENV{SINGLE_SILENT};
+    print $info, "status: running\n" unless $ENV{SINGLE_SILENT};
     exit $exit_status;
   }
 }

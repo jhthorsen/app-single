@@ -6,12 +6,12 @@ use Time::HiRes 'usleep';
 plan skip_all => 'Cannot run without linux?' if $^O ne 'linux';
 plan skip_all => 'Cannot run without script/single' unless -x 'script/single';
 
-my $command = 'sleep 1';
+my $command = "$^X -e 'sleep 1'";
 my $guard = 0;
 my $id = md5_hex $command;
 my %info;
 
-if (fork) {
+if (my $single_pid = fork) {
   diag "Waiting for /tmp/single-$id";
   usleep 1e3 until -r "/tmp/single-$id" or $guard++ > 1000;
   ok $guard < 1000, "info file created ($guard)";
@@ -26,7 +26,8 @@ if (fork) {
   is $info{id}, $id, 'got id';
   like $info{started}, qr/\b\d{4}\b/, 'got started';
   diag "Waiting for $command ...";
-  wait;
+  my $wait_pid = wait;
+  is $wait_pid, $single_pid, 'got expected pid from wait';
   is $?, 0, 'command exit';
 }
 else {
