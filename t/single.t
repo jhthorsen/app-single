@@ -4,7 +4,6 @@ use Digest::MD5 'md5_hex';
 use File::Spec;
 use Time::HiRes 'usleep';
 
-plan skip_all => 'Cannot run without linux?' if $^O ne 'linux';
 plan skip_all => 'Cannot run without script/single' unless -x 'script/single';
 
 my $command = "$^X -e 'sleep 1'";

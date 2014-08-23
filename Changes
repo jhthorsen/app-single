@@ -1,5 +1,8 @@
 Changelog for App::single
 
+0.0401
+       * Will try to run the test-suite on any *nix like OS, #2
+
 0.04     Sat Aug 23 17:09:10 2014
        * Fix test failure when TMPDIR is set, #1
 
