@@ -1,5 +1,8 @@
 Changelog for App::single
 
+0.04
+       * Fix test failure when TMPDIR is set, #1
+
 0.03     Fri Aug  1 09:11:15 2014
        * Trying again to make single.t more robust
 
