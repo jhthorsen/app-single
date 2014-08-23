@@ -1,6 +1,6 @@
 Changelog for App::single
 
-0.04
+0.04     Sat Aug 23 17:09:10 2014
        * Fix test failure when TMPDIR is set, #1
 
 0.03     Fri Aug  1 09:11:15 2014
