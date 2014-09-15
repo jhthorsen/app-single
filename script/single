@@ -7,32 +7,73 @@ use warnings;
 use Digest::MD5 'md5_hex';
 use File::Spec;
 
-$ENV{PATH} ||= '/usr/local/bin:/usr/bin:/bin';
-$ENV{ALREADY_RUNNING_STATUS} ||= 0;
+{
+  local %ENV = %ENV;
+  $ENV{PATH} ||= '/usr/local/bin:/usr/bin:/bin';
+  $ENV{ALREADY_RUNNING_STATUS} ||= 0;
+  $ENV{SINGLE_HUP_SIGNAL} ||= 'TERM';
+  $ENV{SINGLE_ID} = md5_hex "@ARGV";
+  $ENV{SINGLE_INFO_FILE} ||= File::Spec->catfile(File::Spec->tmpdir, "single-$ENV{SINGLE_ID}");
 
-my $exit_status = $ENV{ALREADY_RUNNING_STATUS};
-my $id = md5_hex "@ARGV";
-my $info_file = File::Spec->catfile(File::Spec->tmpdir, "single-$id");
+  return {%ENV} if defined wantarray;
+  exit $ENV{ALREADY_RUNNING_STATUS} if App::single::script::running();
+  exit App::single::script::run(App::single::script::start());
+}
 
-if (open my $INFO, '<', $info_file) {
+package App::single::script;
+
+sub run {
+  my $pid = shift;
+  my $exit_status = 255;
+  my $restart;
+
+  local $SIG{HUP} = sub {
+    kill $ENV{SINGLE_HUP_SIGNAL}, $pid;
+    $restart = 1;
+  };
+
+  while ($pid) {
+    waitpid $pid, 0;
+    $exit_status = $? >> 8;
+    unlink $ENV{SINGLE_INFO_FILE};
+    $pid = $restart ? App::single::script::start() : 0;
+    $restart = 0;
+  }
+
+  return $exit_status;
+}
+
+sub running {
   my ($info, $pid) = ('', 0);
+  open my $INFO, '<', $ENV{SINGLE_INFO_FILE} or return 0;
+
   while (<$INFO>) {
     $pid = $1 if /pid:\s*(\d+)/;
     $info .= $_;
   }
+
   if ($pid and kill 0, $pid) {
     print $info, "status: running\n" unless $ENV{SINGLE_SILENT};
-    exit $exit_status;
+    return 1;
   }
+
+  return 0;
 }
 
-open my $INFO, '>', $info_file or die "Write $info_file: $!";
-print $INFO "pid: $$\n";
-print $INFO "command: @ARGV\n";
-print $INFO "id: $id\n";
-print $INFO "started: @{[~~localtime]}\n";
-close $INFO;
+sub start {
+  my $pid = fork // die "Could not fork @ARGV: $!\n";
 
-$exit_status = system(@ARGV) >> 8;
-unlink $info_file;
-exit $exit_status;
+  if ($pid == 0) { # child
+    exec @ARGV;
+    die "Could not exec @ARGV: $!\n";
+  }
+
+  open my $INFO, '>', $ENV{SINGLE_INFO_FILE} or die "Write $ENV{SINGLE_INFO_FILE}: $!";
+  print $INFO "pid: $pid\n";
+  print $INFO "command: @ARGV\n";
+  print $INFO "id: $ENV{SINGLE_ID}\n";
+  print $INFO "started: @{[~~localtime]}\n";
+  close $INFO;
+
+  return $pid;
+}

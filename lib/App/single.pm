@@ -32,6 +32,19 @@ NOTE: This script is not atomic, but more than good enough for handling the
 NOTE: Including shell characters (such as ">", "|", ";", ...) will invoke the
 shell, allowing unsafe user input.
 
+=head1 ENVIRONMENT
+
+=over 4
+
+=item * SINGLE_HUP_SIGNAL
+
+It is possible to send a HUP signal to the "single" process, which will
+restart the application. The way it restarts the application is simply
+by sending the C<SINGLE_HUP_SIGNAL> signal to the application. This
+is "TERM" by default.
+
+=back
+
 =head1 INSTALLATION
 
 The easiest way to get this application is by using cpanminus:
