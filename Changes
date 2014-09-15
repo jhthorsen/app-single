@@ -2,6 +2,7 @@ Changelog for App::single
 
 0.05
        * Add support for SIGHUP to restart child
+       * Add -h and --help switch
 
 0.0401   Sat Aug 23 17:12:40 2014
        * Will try to run the test-suite on any *nix like OS, #2

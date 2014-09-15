@@ -16,6 +16,7 @@ use File::Spec;
   $ENV{SINGLE_INFO_FILE} ||= File::Spec->catfile(File::Spec->tmpdir, "single-$ENV{SINGLE_ID}");
 
   return {%ENV} if defined wantarray;
+  exec perldoc => 'App::single' if @ARGV == 1 and $ARGV[0] =~ /^--?(?:h|help)$/;
   exit $ENV{ALREADY_RUNNING_STATUS} if App::single::script::running();
   exit App::single::script::run(App::single::script::start());
 }
