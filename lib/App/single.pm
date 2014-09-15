@@ -11,7 +11,8 @@ App::single - An application to run a single instance of a command
 =head1 DESCRIPTION
 
 L<App::single> is an application which allow you to run a single instance of
-a command. Example usage is from a cron:
+a command. This is useful when you want to run a process from
+L<crontab|http://crontab.org>. Example:
 
   * * * * * /usr/local/bin/single autossh example.com sleep 86400 2>/dev/null 1>/dev/null
 
