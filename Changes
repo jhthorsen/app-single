@@ -1,6 +1,6 @@
 Changelog for App::single
 
-0.05
+0.05     Mon Sep 15 09:22:37 2014
        * Add support for SIGHUP to restart child
        * Add -h and --help switch
 

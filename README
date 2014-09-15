@@ -2,11 +2,12 @@ NAME
     App::single - An application to run a single instance of a command
 
 VERSION
-    0.0401
+    0.05
 
 DESCRIPTION
     App::single is an application which allow you to run a single instance
-    of a command. Example usage is from a cron:
+    of a command. This is useful when you want to run a process from crontab
+    <http://crontab.org>. Example:
 
       * * * * * /usr/local/bin/single autossh example.com sleep 86400 2>/dev/null 1>/dev/null
 
@@ -25,6 +26,14 @@ SYNOPSIS
 
     NOTE: Including shell characters (such as ">", "|", ";", ...) will
     invoke the shell, allowing unsafe user input.
+
+ENVIRONMENT
+    *   SINGLE_HUP_SIGNAL
+
+        It is possible to send a HUP signal to the "single" process, which
+        will restart the application. The way it restarts the application is
+        simply by sending the "SINGLE_HUP_SIGNAL" signal to the application.
+        This is "TERM" by default.
 
 INSTALLATION
     The easiest way to get this application is by using cpanminus:
