@@ -2,7 +2,7 @@ use strict;
 use Test::More;
 use Digest::MD5 'md5_hex';
 use File::Spec;
-use Time::HiRes 'ualarm';
+use Time::HiRes;
 
 plan skip_all => 'Cannot run without script/single' unless -x 'script/single';
 
@@ -27,12 +27,12 @@ is_deeply(
 
   local $ENV{SINGLE_HUP_SIGNAL} = 'QUIT';
   local $ENV{SINGLE_INFO_FILE} = $info_file;
-  local $SIG{ALRM} = sub { diag "kill HUP $$"; kill 'HUP', $$; ualarm 100e3; };
+  local $SIG{ALRM} = sub { diag "kill HUP $$"; kill 'HUP', $$; Time::HiRes::ualarm(100e3); };
   local *App::single::script::start = sub { ++$restarted == 3 ? 0 : make_child(); };
 
   open my $FH, '>', $info_file or die $!;
   ok -e $info_file, 'info_file exists';
-  ualarm 100e3;
+  Time::HiRes::ualarm(100e3);
   is App::single::script::run($pid), 42, 'run()';
   is $restarted, 3, 'app got sig hup';
   ok !-e $info_file, 'info_file removed';

@@ -2,7 +2,7 @@ NAME
     App::single - An application to run a single instance of a command
 
 VERSION
-    0.05
+    0.06
 
 DESCRIPTION
     App::single is an application which allow you to run a single instance

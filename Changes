@@ -1,5 +1,8 @@
 Changelog for App::single
 
+0.06     Thu Oct  2 13:28:18 2014
+       * Fix "Time::HiRes::ualarm(): unimplemented in this platform"
+
 0.05     Mon Sep 15 09:22:37 2014
        * Add support for SIGHUP to restart child
        * Add -h and --help switch
